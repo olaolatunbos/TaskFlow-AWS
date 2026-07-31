@@ -65,12 +65,12 @@ jobs:
           terraform plan -no-color -out ${{ matrix.environment }}.tfplan
           terraform show -no-color ${{ matrix.environment }}.tfplan > plan.txt
 
-      - name: Upload Plan
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan-${{ matrix.environment }}
-          path: ./terraform/${{ matrix.environment }}.tfplan
-          retention-days: 5
+      # - name: Upload Plan
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: tfplan-${{ matrix.environment }}
+      #     path: ./terraform/${{ matrix.environment }}.tfplan
+      #     retention-days: 5
 
       - name: Set Plan Output
         run: |
