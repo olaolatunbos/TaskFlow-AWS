@@ -2,26 +2,204 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Todo App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskFlow — Tasks</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <header>
-    <!-- Replace `coderco_logo.png` with your actual filename if different -->
-    <h1>Todo App (V 1.1)</h1>
-  </header>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-search" viewBox="0 0 24 24"><path d="M10 3a7 7 0 1 1 0 14 7 7 0 0 1 0-14Zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm5.6 9.2 5.1 5.1-1.4 1.4-5.1-5.1 1.4-1.4Z"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M11 4.4 12.4 5.8 7.2 11H21v2H7.2l5.2 5.2L11 19.6 3.4 12 11 4.4Z"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.4 6 6 6-6 6L8 16.6 12.6 12 8 7.4 9.4 6Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5Z"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24"><path d="M6 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm6 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm6 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 2h2v20H5V2Zm3 1h11l-2.4 4L19 11H8V3Z"/></symbol>
+    <symbol id="i-comment" viewBox="0 0 24 24"><path d="M4 3h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4V5a2 2 0 0 1 2-2Zm0 2v11l2.3-1.8H20V5H4Z"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M9.9 14.1a1 1 0 0 1 0-1.4l2.8-2.8a1 1 0 0 1 1.4 1.4l-2.8 2.8a1 1 0 0 1-1.4 0Zm-3.2 4.6a4 4 0 0 1 0-5.7l2.5-2.4 1.4 1.4-2.5 2.4a2 2 0 0 0 2.9 2.9l2.4-2.5 1.4 1.4-2.4 2.5a4 4 0 0 1-5.7 0Zm10.6-6.1-1.4-1.4 2.5-2.4a2 2 0 1 0-2.9-2.9l-2.4 2.5-1.4-1.4 2.4-2.5a4 4 0 0 1 5.7 5.7l-2.5 2.4Z"/></symbol>
+    <symbol id="i-checklist" viewBox="0 0 24 24"><path d="M4 4h4v4H4V4Zm6 1h10v2H10V5ZM4 10h4v4H4v-4Zm6 1h10v2H10v-2Zm-6 5h4v4H4v-4Zm6 1h10v2H10v-2Z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M9 3h6l1 2h4v2H4V5h4l1-2ZM6 8h12l-1 13H7L6 8Zm3 2 .5 9h1L10 10H9Zm4 0-.5 9h1l.5-9h-1Z"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M14.8 3.6 17 1.4l5.6 5.6-2.2 2.2-5.6-5.6ZM13.4 5l5.6 5.6L8.6 21H3v-5.6L13.4 5Z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><path d="M3 4h18v2H3V4Zm0 5h18v2H3V9Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"/></symbol>
+    <symbol id="i-board" viewBox="0 0 24 24"><path d="M3 4h5v16H3V4Zm7 0h4v16h-4V4Zm6 0h5v16h-5V4Z"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24"><path d="M3 4h18v16H3V4Zm2 2v3h14V6H5Zm0 5v3h6v-3H5Zm8 0v3h6v-3h-6Zm-8 5v2h6v-2H5Zm8 0v2h6v-2h-6Z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm1 3v4.6l3.2 1.9-1 1.7L11 13V7h2Z"/></symbol>
+    <symbol id="i-overview" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18Zm0 2a7 7 0 1 0 0 14 7 7 0 0 0 0-14Zm1 2v5h4a5 5 0 1 1-4-5Z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m12 10.6 5-5L18.4 7l-5 5 5 5L17 18.4l-5-5-5 5L5.6 17l5-5-5-5L7 5.6l5 5Z"/></symbol>
+  </svg>
 
-  <div id="main-content">
-    <div id="task-container">
-      <!-- Task list will be loaded here by script.js -->
-    </div>
+  <div class="app">
+    <!-- Workspace rail -->
+    <nav class="rail" aria-label="Workspaces">
+      <a class="rail-logo" href="/" aria-label="TaskFlow home">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 2 30 10v12L16 30 2 22V10L16 2Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+          <path d="M16 10 23 14v8l-7 4-7-4v-8l7-4Z" fill="currentColor" opacity=".55"/>
+        </svg>
+      </a>
+      <div class="rail-stack">
+        <button class="rail-item is-active" type="button" aria-label="TaskFlow workspace" data-tint="violet">T</button>
+        <button class="rail-item rail-add" type="button" aria-label="Add workspace">
+          <svg class="icon"><use href="#i-plus"/></svg>
+        </button>
+      </div>
+    </nav>
 
-    <div id="new-task-form">
-      <h2>Add New Task</h2>
-      <form id="add-task-form">
-        <input type="text" id="task-title" placeholder="Task title" required>
-        <input type="text" id="task-description" placeholder="Task description">
-        <button type="submit">Add Task</button>
+    <!-- Main -->
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn" type="button" aria-label="Go back">
+          <svg class="icon"><use href="#i-arrow-left"/></svg>
+        </button>
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="#">Team spcaes</a>
+          <svg class="icon crumb-sep"><use href="#i-chevron"/></svg>
+          <span aria-current="page">Tasks</span>
+        </nav>
+        <label class="search">
+          <svg class="icon"><use href="#i-search"/></svg>
+          <input id="search" type="search" placeholder="Search tasks" aria-label="Search tasks">
+        </label>
+      </header>
+
+      <div class="page-head">
+        <div>
+          <h1>Tasks</h1>
+          <p class="subtitle">Short description will be placed here</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-primary" id="new-task" type="button">
+            <svg class="icon"><use href="#i-plus"/></svg>New task
+          </button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="false" type="button"><svg class="icon"><use href="#i-overview"/></svg>Overview</button>
+        <button class="tab is-active" role="tab" aria-selected="true" type="button"><svg class="icon"><use href="#i-board"/></svg>Board</button>
+        <button class="tab" role="tab" aria-selected="false" type="button"><svg class="icon"><use href="#i-grid"/></svg>List</button>
+        <button class="tab" role="tab" aria-selected="false" type="button"><svg class="icon"><use href="#i-table"/></svg>Table</button>
+        <button class="tab" role="tab" aria-selected="false" type="button"><svg class="icon"><use href="#i-clock"/></svg>Timeline</button>
+      </div>
+
+      <div class="board" id="board">
+        <section class="column" data-status="todo">
+          <header class="column-head">
+            <span class="dot dot-todo"></span>
+            <h2>To do</h2>
+            <span class="count" data-count>0</span>
+            <button class="icon-btn column-add" type="button" data-add="todo" aria-label="Add task to To do">
+              <svg class="icon"><use href="#i-plus"/></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="To do column options">
+              <svg class="icon"><use href="#i-dots"/></svg>
+            </button>
+          </header>
+          <div class="cards" data-dropzone="todo"></div>
+        </section>
+
+        <section class="column" data-status="in_progress">
+          <header class="column-head">
+            <span class="dot dot-progress"></span>
+            <h2>In Progress</h2>
+            <span class="count" data-count>0</span>
+            <button class="icon-btn column-add" type="button" data-add="in_progress" aria-label="Add task to In Progress">
+              <svg class="icon"><use href="#i-plus"/></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="In Progress column options">
+              <svg class="icon"><use href="#i-dots"/></svg>
+            </button>
+          </header>
+          <div class="cards" data-dropzone="in_progress"></div>
+        </section>
+
+        <section class="column" data-status="done">
+          <header class="column-head">
+            <span class="dot dot-done"></span>
+            <h2>Done</h2>
+            <span class="count" data-count>0</span>
+            <button class="icon-btn column-add" type="button" data-add="done" aria-label="Add task to Done">
+              <svg class="icon"><use href="#i-plus"/></svg>
+            </button>
+            <button class="icon-btn" type="button" aria-label="Done column options">
+              <svg class="icon"><use href="#i-dots"/></svg>
+            </button>
+          </header>
+          <div class="cards" data-dropzone="done"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Task dialog -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <header class="modal-head">
+        <h2 id="modal-title">New task</h2>
+        <button class="icon-btn" type="button" id="modal-close" aria-label="Close">
+          <svg class="icon"><use href="#i-close"/></svg>
+        </button>
+      </header>
+      <form id="task-form" class="modal-body">
+        <label class="field">
+          <span>Title</span>
+          <input type="text" name="title" id="task-title" placeholder="Design homepage wireframe" required>
+        </label>
+        <label class="field">
+          <span>Description</span>
+          <textarea name="description" id="task-description" rows="3" placeholder="Discuss layout with the marketing team for alignment"></textarea>
+        </label>
+        <div class="field-row">
+          <label class="field">
+            <span>Column</span>
+            <select name="status" id="task-status">
+              <option value="todo">To do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Stage</span>
+            <select name="stage" id="task-stage">
+              <option value="not_started">Not Started</option>
+              <option value="in_research">In Research</option>
+              <option value="on_track">On Track</option>
+              <option value="complete">Complete</option>
+            </select>
+          </label>
+        </div>
+        <div class="field-row">
+          <label class="field">
+            <span>Priority</span>
+            <select name="priority" id="task-priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Due date</span>
+            <input type="date" name="due_date" id="task-due">
+          </label>
+        </div>
+        <label class="field">
+          <span>Assignees</span>
+          <input type="text" name="assignees" id="task-assignees" placeholder="Ada Lovelace, Rae Mensah">
+          <small class="hint">Comma separated names</small>
+        </label>
+        <div class="field-row">
+          <label class="field">
+            <span>Subtasks done</span>
+            <input type="number" name="subtasks_done" id="task-subtasks-done" min="0" value="0">
+          </label>
+          <label class="field">
+            <span>Subtasks total</span>
+            <input type="number" name="subtasks_total" id="task-subtasks-total" min="0" value="0">
+          </label>
+        </div>
+        <footer class="modal-foot">
+          <button class="btn btn-ghost" type="button" id="modal-cancel">Cancel</button>
+          <button class="btn btn-primary" type="submit" id="modal-submit">Create task</button>
+        </footer>
       </form>
     </div>
   </div>
