@@ -94,11 +94,7 @@ jobs:
       - name: Resolve staging URL
         id: url
         run: |
-          DNS=$(aws elbv2 describe-load-balancers \
-            --names "${{ vars.ECS_CLUSTER }}-alb" \
-            --query 'LoadBalancers[0].DNSName' \
-            --output text)
-          echo "base=http://$DNS" >> "$GITHUB_OUTPUT"
+          echo "base=https://staging.olaolat.com" >> "$GITHUB_OUTPUT"
 
       - name: Smoke test health endpoint
         run: |
