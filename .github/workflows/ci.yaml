@@ -11,6 +11,9 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+  release:
+    types:
+      - published
 
 
 permissions:
@@ -163,26 +166,41 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push
-        env:
-          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          STAGING_REPOSITORY: staging/task-management
-          PRODUCTION_REPOSITORY: production/task-management
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          # Build once, tag for both the staging and production ECR repos
-          # (same registry/account), then push all tags.
-          docker build \
-            -t $REGISTRY/$STAGING_REPOSITORY:$IMAGE_TAG \
-            -t $REGISTRY/$STAGING_REPOSITORY:latest \
-            -t $REGISTRY/$PRODUCTION_REPOSITORY:$IMAGE_TAG \
-            -t $REGISTRY/$PRODUCTION_REPOSITORY:latest \
-            ./app
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ secrets.ECR_REPOSITORY_URL }}
+          tags: |
+            type=sha,prefix=git-
+            type=raw,value=staging,enable=${{ github.event_name == 'push' }}
+            type=raw,value=prod,enable=${{ github.event_name == 'release' }}
+            type=ref,event=tag
+      
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v3
 
-          docker push $REGISTRY/$STAGING_REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$STAGING_REPOSITORY:latest
-          docker push $REGISTRY/$PRODUCTION_REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$PRODUCTION_REPOSITORY:latest
+      # - name: Build and push
+      #   env:
+      #     REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+      #     STAGING_REPOSITORY: staging/task-management
+      #     PRODUCTION_REPOSITORY: production/task-management
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: |
+      #     # Build once, tag for both the staging and production ECR repos
+      #     # (same registry/account), then push all tags.
+      #     docker build \
+      #       -t $REGISTRY/$STAGING_REPOSITORY:$IMAGE_TAG \
+      #       -t $REGISTRY/$STAGING_REPOSITORY:latest \
+      #       -t $REGISTRY/$PRODUCTION_REPOSITORY:$IMAGE_TAG \
+      #       -t $REGISTRY/$PRODUCTION_REPOSITORY:latest \
+      #       ./app
+
+      #     docker push $REGISTRY/$STAGING_REPOSITORY:$IMAGE_TAG
+      #     docker push $REGISTRY/$STAGING_REPOSITORY:latest
+      #     docker push $REGISTRY/$PRODUCTION_REPOSITORY:$IMAGE_TAG
+      #     docker push $REGISTRY/$PRODUCTION_REPOSITORY:latest
 
       
 
