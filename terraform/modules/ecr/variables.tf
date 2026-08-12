@@ -6,7 +6,7 @@ variable "name" {
 variable "image_tag_mutability" {
   description = "Whether image tags can be overwritten. MUTABLE or IMMUTABLE"
   type        = string
-  default     = "MUTABLE"
+  default     = "IMMUTABLE"
 
   validation {
     condition     = contains(["MUTABLE", "IMMUTABLE"], var.image_tag_mutability)

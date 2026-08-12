@@ -80,9 +80,7 @@ resource "aws_route_table_association" "private" {
 
 # ---------------------------------------------------------------------------
 # VPC endpoints
-#
-# With no NAT gateway, Fargate image pulls depend entirely on these. A pull
-# needs all three: ecr.api to authenticate, ecr.dkr for the registry protocol,
+# ecr.api to authenticate, ecr.dkr for the registry protocol,
 # and the S3 gateway endpoint because ECR serves image layers from S3.
 # ---------------------------------------------------------------------------
 

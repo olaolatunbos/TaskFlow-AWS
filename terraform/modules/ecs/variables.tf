@@ -1,3 +1,8 @@
+variable "name" {
+  description = "Name prefix for the CodeDeploy application, deployment group and service role"
+  type        = string
+}
+
 variable "cluster_name" {
   description = "Name of the ECS cluster"
   type        = string
@@ -39,9 +44,43 @@ variable "image_tag" {
   default     = "latest"
 }
 
-variable "target_group_arn" {
-  description = "ARN of the load balancer target group to register the service's tasks with"
+# --- Blue/green wiring, supplied by the ALB module --------------------------
+
+variable "blue_target_group_arn" {
+  description = "ARN of the blue target group the ECS service is initially registered with"
   type        = string
+}
+
+variable "blue_target_group_name" {
+  description = "Name of the blue target group in the CodeDeploy target group pair"
+  type        = string
+}
+
+variable "green_target_group_name" {
+  description = "Name of the green target group in the CodeDeploy target group pair"
+  type        = string
+}
+
+variable "prod_listener_arn" {
+  description = "ARN of the ALB listener carrying production traffic, which CodeDeploy swaps between target groups"
+  type        = string
+}
+
+variable "test_listener_arn" {
+  description = "ARN of the ALB listener carrying test traffic to the replacement task set"
+  type        = string
+}
+
+variable "deployment_config_name" {
+  description = "CodeDeploy deployment configuration controlling how traffic shifts, e.g. CodeDeployDefault.ECSAllAtOnce or CodeDeployDefault.ECSLinear10PercentEvery1Minutes"
+  type        = string
+  default     = "CodeDeployDefault.ECSAllAtOnce"
+}
+
+variable "termination_wait_time_in_minutes" {
+  description = "How long CodeDeploy keeps the old (blue) task set running after a successful cutover, during which a rollback is an instant listener swap"
+  type        = number
+  default     = 5
 }
 
 variable "vpc_id" {

@@ -22,3 +22,14 @@ output "ecs_service_name" {
   description = "Name of the ECS service."
   value       = module.ecs.service_name
 }
+
+# The deploy workflow needs both of these to start a blue/green deployment.
+output "codedeploy_app_name" {
+  description = "Name of the CodeDeploy application driving blue/green deployments"
+  value       = module.ecs.codedeploy_app_name
+}
+
+output "codedeploy_deployment_group_name" {
+  description = "Name of the CodeDeploy deployment group driving blue/green deployments"
+  value       = module.ecs.codedeploy_deployment_group_name
+}

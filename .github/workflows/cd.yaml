@@ -31,6 +31,10 @@ jobs:
 
     steps:
 
+      # Needed for appspec.yaml, which the CodeDeploy step reads from the repo.
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -70,13 +74,16 @@ jobs:
           container-name: ${{ vars.CONTAINER_NAME }}
           image: ${{ steps.fetch-image.outputs.image }}
 
-      - name: Deploy to Amazon ECS
+      - name: Deploy via CodeDeploy
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ vars.ECS_SERVICE }}
           cluster: ${{ vars.ECS_CLUSTER }}
-          wait-for-service-stability: true    
+          codedeploy-appspec: appspec.yaml
+          codedeploy-application: ${{ vars.CODEDEPLOY_APP }}
+          codedeploy-deployment-group: ${{ vars.CODEDEPLOY_DG }}
+          wait-for-service-stability: true
 
   smoke-test:
     name: Smoke Test (staging)

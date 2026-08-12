@@ -13,9 +13,25 @@ output "alb_zone_id" {
   value       = aws_lb.this.zone_id
 }
 
-output "target_group_arn" {
-  description = "ARN of the target group to register the ECS service with"
-  value       = aws_lb_target_group.this.arn
+# The ECS service registers against blue; CodeDeploy owns the swap from there.
+output "blue_target_group_arn" {
+  description = "ARN of the blue target group, the one the ECS service is initially registered with"
+  value       = aws_lb_target_group.blue.arn
+}
+
+output "blue_target_group_name" {
+  description = "Name of the blue target group, for the CodeDeploy target group pair"
+  value       = aws_lb_target_group.blue.name
+}
+
+output "green_target_group_arn" {
+  description = "ARN of the green target group, which CodeDeploy shifts traffic to during a deployment"
+  value       = aws_lb_target_group.green.arn
+}
+
+output "green_target_group_name" {
+  description = "Name of the green target group, for the CodeDeploy target group pair"
+  value       = aws_lb_target_group.green.name
 }
 
 output "security_group_id" {
@@ -24,8 +40,13 @@ output "security_group_id" {
 }
 
 output "https_listener_arn" {
-  description = "ARN of the ALB HTTPS listener"
+  description = "ARN of the ALB HTTPS listener, CodeDeploy's production traffic route"
   value       = aws_lb_listener.https.arn
+}
+
+output "test_listener_arn" {
+  description = "ARN of the ALB test listener, CodeDeploy's test traffic route"
+  value       = aws_lb_listener.test.arn
 }
 
 output "http_listener_arn" {

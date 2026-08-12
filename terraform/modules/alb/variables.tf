@@ -32,9 +32,21 @@ variable "ssl_policy" {
 }
 
 variable "ingress_cidr_blocks" {
-  description = "CIDR blocks allowed to reach the ALB listener"
+  description = "CIDR blocks allowed to reach the ALB's production listeners (80/443)"
   type        = list(string)
   default     = ["0.0.0.0/0"]
+}
+
+variable "test_listener_port" {
+  description = "Port of the CodeDeploy test traffic listener, used to validate the green task set before shifting production traffic"
+  type        = number
+  default     = 8443
+}
+
+variable "test_ingress_cidr_blocks" {
+  description = "CIDR blocks allowed to reach the test listener. Keep this private: it serves the unvalidated green task set"
+  type        = list(string)
+  default     = ["10.0.0.0/8"]
 }
 
 variable "target_port" {

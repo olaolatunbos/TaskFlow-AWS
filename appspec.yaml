@@ -1,0 +1,32 @@
+# CodeDeploy AppSpec for ECS Blue/Green.
+#
+# The pipeline (aws-actions/amazon-ecs-deploy-task-definition) substitutes
+# <TASK_DEFINITION_ARN> with the new revision it just registered. You do
+# not need to fill it in by hand.
+#
+# Hooks are optional. Each one points at a Lambda that returns Succeeded
+# or Failed. A failure aborts the deploy and traffic stays on BLUE.
+
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: <TASK_DEFINITION_ARN>
+        LoadBalancerInfo:
+          ContainerName: app
+          ContainerPort: 3000
+        PlatformVersion: LATEST
+
+# Hooks:
+#   # Fires on the test listener after GREEN is up but before prod traffic flips.
+#   # Run smoke tests, schema-compat checks, contract tests.
+#   - AfterAllowTestTraffic: arn:aws:lambda:eu-west-1:123456789012:function:bg-demo-smoke-tests
+
+#   # Last gate before flipping production traffic. Use for go/no-go logic
+#   # (e.g. check feature flag service is reachable).
+#   - BeforeAllowTraffic: arn:aws:lambda:eu-west-1:123456789012:function:bg-demo-final-check
+
+#   # Fires after prod traffic is on GREEN. Use for synthetic checks /
+#   # alerting on real prod traffic.
+#   - AfterAllowTraffic: arn:aws:lambda:eu-west-1:123456789012:function:bg-demo-post-deploy
